@@ -362,11 +362,19 @@ export default function LandingPage() {
           </div>
           
           <div>
-            <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Support</h4>
-            <ul className="space-y-4 text-sm font-medium">
-              <li className="flex items-center gap-2 hover:text-white transition-colors cursor-pointer"><Mail className="h-4 w-4" /> support@amanoescrow.com</li>
-              <li className="flex items-center gap-2 hover:text-white transition-colors cursor-pointer"><HelpCircle className="h-4 w-4" /> Resolution Center</li>
-              <li className="flex items-center gap-2 hover:text-white transition-colors cursor-pointer"><Building className="h-4 w-4" /> Tech District HQ</li>
+            <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Company Details</h4>
+            <ul className="space-y-4 text-sm font-medium text-slate-400">
+              <li className="flex items-start gap-2">
+                <Building className="h-4 w-4 mt-0.5 shrink-0" />
+                <div>
+                  <div className="text-white font-bold">Amano</div>
+                  <div className="text-xs mt-1">Registration: 1720149078309</div>
+                  <div className="text-xs text-accent mt-0.5">Registered With FBR</div>
+                </div>
+              </li>
+              <li className="flex items-center gap-2 hover:text-white transition-colors cursor-pointer pt-2">
+                <Mail className="h-4 w-4" /> support@useamano.com
+              </li>
             </ul>
           </div>
 

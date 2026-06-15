@@ -76,23 +76,16 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
                   <div className="flex-1 space-y-4">
                     <div>
                       <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Bank Name</div>
-                      <div className="font-medium text-slate-800">Amano Secure Banking (Meezan Bank)</div>
+                      <div className="font-medium text-slate-800">Bank Alfalah Limited</div>
                     </div>
                     <div>
                       <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Account Title</div>
-                      <div className="font-medium text-slate-800">Amano Escrow Pvt. Ltd.</div>
+                      <div className="font-medium text-slate-800">Amano</div>
                     </div>
                     <div>
                       <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Account Number</div>
                       <div className="flex items-center gap-2">
-                        <code className="bg-white px-3 py-1.5 rounded-lg border border-slate-200 font-mono text-sm text-slate-800">0123 4567 8910 1112</code>
-                        <button className="p-1.5 text-slate-400 hover:text-primary transition-colors bg-white border border-slate-200 rounded-lg"><Copy className="h-4 w-4" /></button>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">IBAN</div>
-                      <div className="flex items-center gap-2">
-                        <code className="bg-white px-3 py-1.5 rounded-lg border border-slate-200 font-mono text-sm text-slate-800 break-all">PK34 MEZN 0123 4567 8910 1112</code>
+                        <code className="bg-white px-3 py-1.5 rounded-lg border border-slate-200 font-mono text-sm text-slate-800">59135002922584</code>
                         <button className="p-1.5 text-slate-400 hover:text-primary transition-colors bg-white border border-slate-200 rounded-lg"><Copy className="h-4 w-4" /></button>
                       </div>
                     </div>
@@ -100,8 +93,10 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
                   
                   <div className="flex flex-col items-center justify-center space-y-3 p-4 bg-white rounded-xl border border-slate-200 shrink-0">
                     <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Scan to Pay</div>
-                    <div className="w-32 h-32 bg-slate-100 flex items-center justify-center rounded-lg border border-slate-200">
-                      <QrCode className="h-20 w-20 text-slate-400" />
+                    <div className="w-32 h-32 bg-slate-100 flex items-center justify-center rounded-lg border border-slate-200 overflow-hidden relative">
+                      {/* Using standard img tag, user must place qr-code.jpg in public folder */}
+                      <img src="/qr-code.jpg" alt="Bank Alfalah QR Code" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling?.classList.remove('hidden') }} />
+                      <QrCode className="h-12 w-12 text-slate-300 absolute hidden" />
                     </div>
                     <div className="text-xs text-slate-400 text-center max-w-[150px]">Use your banking app to scan and pay directly.</div>
                   </div>
