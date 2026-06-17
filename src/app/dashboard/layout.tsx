@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
@@ -23,6 +23,7 @@ export default function DashboardLayout({
 }) {
   const { user, isLoading, logout } = useAuth();
   const router = useRouter();
+  const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -40,8 +41,8 @@ export default function DashboardLayout({
       <aside className="w-full md:w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
         <div className="h-16 px-6 border-b border-slate-100 flex items-center justify-between md:justify-start">
           <Link href="/" className="flex items-center gap-2">
-            <Shield className="h-7 w-7 text-primary" fill="currentColor" />
-            <span className="text-xl font-bold text-primary tracking-tight">AMANO</span>
+            <Shield className="h-7 w-7 text-blue-600" fill="currentColor" />
+            <span className="text-xl font-bold text-blue-600 tracking-tight">AMANO</span>
           </Link>
         </div>
         
@@ -106,10 +107,41 @@ export default function DashboardLayout({
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0">
           <div className="font-semibold text-slate-800">Dashboard</div>
           <div className="flex items-center gap-4">
-            <button className="relative p-2 text-slate-400 hover:text-slate-600 transition-colors">
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
+            <div className="relative">
+              <button 
+                onClick={() => setShowNotifications(!showNotifications)}
+                className={`relative p-2 transition-colors rounded-lg ${showNotifications ? 'bg-slate-100 text-slate-800' : 'text-slate-400 hover:text-slate-600'}`}
+              >
+                <Bell className="h-5 w-5" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+              </button>
+              
+              {showNotifications && (
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-slate-200 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+                    <h3 className="font-bold text-slate-800 text-sm">Notifications</h3>
+                    <span className="text-xs text-primary font-bold cursor-pointer hover:underline">Mark all read</span>
+                  </div>
+                  <div className="divide-y divide-slate-100 max-h-[300px] overflow-y-auto">
+                    <div className="p-4 bg-blue-50/50 hover:bg-slate-50 transition-colors cursor-pointer">
+                      <div className="flex gap-3">
+                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                          <Bell className="h-4 w-4 text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-slate-800">Welcome to Amano!</p>
+                          <p className="text-xs text-slate-500 mt-0.5">Your account is ready for secure escrow transactions.</p>
+                          <p className="text-[10px] text-slate-400 mt-2 font-medium">Just now</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-3 border-t border-slate-100 text-center bg-slate-50">
+                    <button className="text-xs font-bold text-slate-500 hover:text-primary transition-colors">View All Settings</button>
+                  </div>
+                </div>
+              )}
+            </div>
             <div className="h-6 w-px bg-slate-200"></div>
             <div className="text-sm font-semibold text-slate-600 flex items-center gap-2">
               <Shield className="h-4 w-4 text-accent" /> Secure Session

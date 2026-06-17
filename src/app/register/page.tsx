@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 import { 
   Shield, 
   Lock, 
@@ -15,7 +16,9 @@ import {
   CheckSquare, 
   Square,
   FileImage,
-  RefreshCw
+  RefreshCw,
+  Eye,
+  EyeOff
 } from "lucide-react";
 
 export default function RegisterPage() {
@@ -23,6 +26,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   
   // KYC States
   const [docType, setDocType] = useState<"CNIC" | "Passport">("CNIC");
@@ -37,6 +41,7 @@ export default function RegisterPage() {
   // Terms State
   const [termsChecked, setTermsChecked] = useState(false);
   
+  const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState("");
   const { register } = useAuth();
   const router = useRouter();
@@ -65,11 +70,63 @@ export default function RegisterPage() {
       return;
     }
 
-    const { success, error: authError } = await register(name, email, password);
-    if (success) {
-      router.push("/dashboard");
-    } else {
-      setError(authError || "An account with this email already exists.");
+    setIsRegistering(true);
+
+    try {
+      let frontUrl = "";
+      let backUrl = "";
+
+      const uploadFile = async (file: File) => {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const { data, error } = await supabase.storage.from('kyc-documents').upload(fileName, file);
+        if (error) throw error;
+        const { data: { publicUrl } } = supabase.storage.from('kyc-documents').getPublicUrl(fileName);
+        return publicUrl;
+      };
+
+      if (docType === "CNIC") {
+        const frontFile = cnicFrontRef.current?.files?.[0];
+        const backFile = cnicBackRef.current?.files?.[0];
+        if (frontFile) frontUrl = await uploadFile(frontFile);
+        if (backFile) backUrl = await uploadFile(backFile);
+      } else {
+        const passportFile = passportRef.current?.files?.[0];
+        if (passportFile) frontUrl = await uploadFile(passportFile);
+      }
+
+      const kycData = {
+        type: docType,
+        frontUrl,
+        backUrl: backUrl || undefined
+      };
+
+      const { success, error: authError } = await register(name, email, password, kycData);
+      if (success) {
+        try {
+          await fetch('/api/auth/welcome-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              email: email,
+              name: name,
+              date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            })
+          });
+        } catch (emailErr) {
+          console.error("Failed to send welcome email", emailErr);
+        }
+
+        // Logout immediately so they cannot access dashboard until approved
+        await supabase.auth.signOut();
+        router.push("/pending-approval");
+      } else {
+        setError(authError || "An account with this email already exists.");
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to upload documents. Please try again.");
+    } finally {
+      setIsRegistering(false);
     }
   };
 
@@ -87,8 +144,8 @@ export default function RegisterPage() {
       <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-50 via-slate-50 to-white -z-10"></div>
       
       <Link href="/" className="flex items-center gap-2 mb-10">
-        <Shield className="h-10 w-10 text-primary" fill="currentColor" />
-        <span className="text-3xl font-bold text-primary tracking-tight">AMANO</span>
+        <Shield className="h-10 w-10 text-blue-600" fill="currentColor" />
+        <span className="text-3xl font-bold text-blue-600 tracking-tight">AMANO</span>
       </Link>
 
       <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 p-8 sm:p-10 relative z-10 my-8">
@@ -161,14 +218,21 @@ export default function RegisterPage() {
                   <Lock className="h-5 w-5 text-slate-400" />
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   minLength={6}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                  className="w-full pl-11 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                   placeholder="••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-primary transition-colors"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
               </div>
             </div>
           </div>
@@ -329,11 +393,17 @@ export default function RegisterPage() {
 
           <button
             type="submit"
-            disabled={!captchaChecked || !termsChecked}
+            disabled={!captchaChecked || !termsChecked || isRegistering}
             className="w-full bg-primary hover:bg-primary/90 disabled:bg-slate-300 disabled:cursor-not-allowed text-white py-4 rounded-xl font-bold transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2 group mt-2"
           >
-            Create Account
-            <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            {isRegistering ? (
+              <RefreshCw className="h-5 w-5 animate-spin" />
+            ) : (
+              <>
+                Create Account
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
           </button>
         </form>
 

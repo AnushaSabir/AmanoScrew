@@ -29,6 +29,7 @@ export default function CreateContractWizard() {
     yourName: "",
     counterpartyName: "",
     counterpartyEmail: "",
+    counterpartyMobile: "",
     role: "Buyer",
     amount: "",
     currency: "PKR",
@@ -79,7 +80,6 @@ export default function CreateContractWizard() {
         }
       }
 
-      // Try to find counterparty by email
       let counterpartyId = null;
       if (formData.counterpartyEmail) {
         const { data: counterpartyData } = await supabase
@@ -90,6 +90,8 @@ export default function CreateContractWizard() {
         if (counterpartyData) {
           counterpartyId = counterpartyData.id;
         }
+      } else if (formData.counterpartyMobile) {
+        // Also check by mobile if email not provided (assuming mobile might be stored later, for now just placeholder logic)
       }
 
       const buyerId = formData.role === 'Buyer' ? user.id : counterpartyId;
@@ -104,6 +106,9 @@ export default function CreateContractWizard() {
         currency: formData.currency,
         buyer_id: buyerId,
         seller_id: sellerId,
+        counterparty_email: formData.counterpartyEmail,
+        counterparty_phone: formData.counterpartyMobile,
+        counterparty_name: formData.counterpartyName,
         initiator_role: formData.role,
         scope: formData.scope,
         timeline: formData.timeline,
@@ -116,6 +121,24 @@ export default function CreateContractWizard() {
       if (insertError) throw insertError;
 
       setCreatedContractId(data.id);
+      
+      // If no counterparty ID was found but an email was provided, send an invite
+      if (!counterpartyId && formData.counterpartyEmail) {
+        try {
+          await fetch('/api/invite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              email: formData.counterpartyEmail.trim().toLowerCase(),
+              title: formData.title,
+              inviterName: formData.yourName || user.email
+            })
+          });
+        } catch (inviteErr) {
+          console.error("Failed to send invite email", inviteErr);
+        }
+      }
+
       setIsSubmitted(true);
     } catch (err: any) {
       console.error(err);
@@ -291,15 +314,43 @@ export default function CreateContractWizard() {
                 </div>
               </div>
             </div>
-            <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2 mt-6">Other Party Name</label>
-              <input 
-                type="text" 
-                value={formData.counterpartyName}
-                onChange={(e) => updateForm('counterpartyName', e.target.value)}
-                placeholder="Company or Individual Name"
-                className="w-full p-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-              />
+            <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl mt-6">
+              <h4 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <User className="h-4 w-4 text-primary" /> Counterparty Details
+              </h4>
+              <p className="text-xs text-slate-500 mb-4">Provide details of the other party. We'll invite them if they don't have an account.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
+                  <input 
+                    type="email" 
+                    value={formData.counterpartyEmail}
+                    onChange={(e) => updateForm('counterpartyEmail', e.target.value)}
+                    placeholder="user@example.com"
+                    className="w-full p-2.5 text-sm rounded-lg border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Mobile Number</label>
+                  <input 
+                    type="tel" 
+                    value={formData.counterpartyMobile}
+                    onChange={(e) => updateForm('counterpartyMobile', e.target.value)}
+                    placeholder="+92 300 1234567"
+                    className="w-full p-2.5 text-sm rounded-lg border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Name / Username</label>
+                  <input 
+                    type="text" 
+                    value={formData.counterpartyName}
+                    onChange={(e) => updateForm('counterpartyName', e.target.value)}
+                    placeholder="Company or Individual Name"
+                    className="w-full p-2.5 text-sm rounded-lg border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                  />
+                </div>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -420,6 +471,7 @@ export default function CreateContractWizard() {
                 <div>
                   <div className="text-sm text-slate-500 mb-1">Other Party</div>
                   <div className="font-bold text-slate-800">{formData.counterpartyName || 'Not specified'}</div>
+                  <div className="text-xs text-slate-500 mt-1">{formData.counterpartyEmail || formData.counterpartyMobile || 'No contact provided'}</div>
                 </div>
                 {(formData.dealType === 'Online Shopping' || formData.dealType === 'Online Buy/Sell') && (
                   <div>

@@ -79,9 +79,6 @@ export default function DashboardPage() {
           <p className="text-slate-500 text-sm font-medium">Here is what's happening with your escrow accounts today.</p>
         </div>
         <div className="flex gap-3">
-          <button className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2">
-            <Download className="h-4 w-4" /> Export
-          </button>
           <Link href="/dashboard/contracts/create" className="bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-md shadow-primary/20 flex items-center gap-2">
             <Plus className="h-4 w-4" /> Create New Deal
           </Link>
@@ -212,18 +209,6 @@ export default function DashboardPage() {
                 </div>
                 <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-primary transition-colors" />
               </Link>
-              <button className="w-full text-left flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:border-slate-300 hover:bg-slate-50 transition-all group shadow-sm">
-                <div className="flex items-center gap-4">
-                  <div className="p-2.5 bg-white border border-slate-200 text-secondary rounded-lg shadow-sm">
-                    <Wallet className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-slate-800 text-sm">Deposit Funds</div>
-                    <div className="text-xs font-medium text-slate-500 mt-0.5">Add to escrow balance</div>
-                  </div>
-                </div>
-                <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-secondary transition-colors" />
-              </button>
             </div>
           </div>
 
