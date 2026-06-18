@@ -18,7 +18,8 @@ import {
   FileImage,
   RefreshCw,
   Eye,
-  EyeOff
+  EyeOff,
+  X
 } from "lucide-react";
 
 export default function RegisterPage() {
@@ -33,6 +34,7 @@ export default function RegisterPage() {
   const [cnicFrontName, setCnicFrontName] = useState("");
   const [cnicBackName, setCnicBackName] = useState("");
   const [passportName, setPassportName] = useState("");
+  const [showTermsModal, setShowTermsModal] = useState(false);
   
   // Captcha State
   const [captchaChecked, setCaptchaChecked] = useState(false);
@@ -386,7 +388,7 @@ export default function RegisterPage() {
                 {termsChecked && <CheckSquare className="absolute w-4 h-4 text-white pointer-events-none" strokeWidth={3} />}
               </div>
               <span className="text-sm font-medium text-slate-600 group-hover:text-slate-800 transition-colors">
-                I agree to the Amano Escrow <a href="#" className="text-primary hover:underline font-bold">Terms & Conditions</a> and <a href="#" className="text-primary hover:underline font-bold">Privacy Policy</a>.
+                I agree to the Amano Escrow <button type="button" onClick={(e) => { e.preventDefault(); setShowTermsModal(true); }} className="text-primary hover:underline font-bold">Terms & Conditions</button> and <a href="#" className="text-primary hover:underline font-bold">Privacy Policy</a>.
               </span>
             </label>
           </div>
@@ -414,6 +416,214 @@ export default function RegisterPage() {
           </Link>
         </div>
       </div>
+
+      {/* Terms & Conditions Modal */}
+      {showTermsModal && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+              <h2 className="text-xl font-bold text-slate-800">Amano Terms of Service</h2>
+              <button 
+                onClick={() => setShowTermsModal(false)}
+                className="p-2 bg-white text-slate-400 hover:text-slate-600 rounded-full shadow-sm border border-slate-200 hover:border-slate-300 transition-all"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            
+            {/* Modal Content */}
+            <div className="p-6 overflow-y-auto flex-1 space-y-6 text-sm text-slate-600">
+              <section>
+                <h3 className="font-bold text-slate-800 text-base mb-2">1. Definition of Amano's Service</h3>
+                <p>Amano provides a digital transaction management platform that helps buyers and sellers conduct transactions securely. Amano temporarily holds funds until the agreed transaction conditions are met and verified by the parties involved. Amano acts solely as a neutral transaction facilitator and does not act as a buyer, seller, agent, contractor, guarantor, employer, or partner in any transaction.</p>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-slate-800 text-base mb-2">2. User Eligibility</h3>
+                <p className="mb-2">To use Amano's services, users must:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Be at least 18 years of age.</li>
+                  <li>Have the legal capacity to enter into binding contracts.</li>
+                  <li>Provide accurate and truthful information during registration and verification.</li>
+                  <li>Comply with all applicable laws and regulations of Pakistan.</li>
+                  <li>Not be restricted from using financial or digital transaction services by any competent authority.</li>
+                </ul>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-slate-800 text-base mb-2">3. Account Registration Requirements</h3>
+                <p className="mb-2">Users may be required to create an Amano account before using certain services. Users agree to:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Provide accurate and complete registration information.</li>
+                  <li>Maintain the confidentiality of account credentials.</li>
+                  <li>Notify Amano immediately of unauthorized account access.</li>
+                  <li>Keep contact information updated.</li>
+                  <li>Complete identity verification procedures when requested.</li>
+                </ul>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-slate-800 text-base mb-2">4. How Amano Transactions Work</h3>
+                <p className="mb-2">The general transaction process is as follows:</p>
+                <ol className="list-decimal pl-5 space-y-1">
+                  <li>Buyer and seller agree on transaction terms.</li>
+                  <li>Buyer submits payment through the approved payment method.</li>
+                  <li>Amano confirms receipt of funds.</li>
+                  <li>Seller provides the agreed product, service, or deliverable.</li>
+                  <li>Buyer confirms satisfactory completion.</li>
+                  <li>Amano releases funds to the seller.</li>
+                </ol>
+                <p className="mt-2">If a dispute arises, funds may be temporarily held until dispute resolution is completed. Amano may request evidence from either party before releasing funds.</p>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-slate-800 text-base mb-2">5. Buyer Responsibilities</h3>
+                <p className="mb-2">Buyers agree to:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Provide accurate transaction information.</li>
+                  <li>Submit payment through approved channels.</li>
+                  <li>Clearly communicate transaction requirements.</li>
+                  <li>Inspect and review delivered goods or services promptly.</li>
+                  <li>Raise disputes honestly and in good faith.</li>
+                  <li>Not misuse Amano's dispute process.</li>
+                </ul>
+                <p className="mt-2 text-slate-800 font-medium">False claims or fraudulent disputes may result in account suspension.</p>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-slate-800 text-base mb-2">6. Seller Responsibilities</h3>
+                <p className="mb-2">Sellers agree to:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Deliver products or services as described.</li>
+                  <li>Fulfill obligations within agreed timelines.</li>
+                  <li>Maintain professional communication with buyers.</li>
+                  <li>Provide evidence of delivery or completion when requested.</li>
+                  <li>Comply with all applicable laws and regulations.</li>
+                </ul>
+                <p className="mt-2 text-slate-800 font-medium">Misrepresentation, fraud, or failure to fulfill agreed obligations may result in account suspension or termination.</p>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-slate-800 text-base mb-2">7. Payment Release Process</h3>
+                <p className="mb-2">Funds may be released when:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>The buyer confirms successful completion of the transaction.</li>
+                  <li>The agreed review period expires without dispute.</li>
+                  <li>A dispute decision requires release of funds.</li>
+                  <li>Both parties jointly authorize the release.</li>
+                </ul>
+                <p className="mt-2">Amano reserves the right to delay payment release for security reviews, fraud prevention, legal compliance, or dispute investigations.</p>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-slate-800 text-base mb-2">8. Dispute Process</h3>
+                <p className="mb-2">If a disagreement arises:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Either party may submit a dispute request.</li>
+                  <li>Amano may request supporting evidence from both parties.</li>
+                  <li>Evidence may include contracts, messages, invoices, screenshots, delivery records, or other relevant documents.</li>
+                  <li>Amano will review available information in a fair and neutral manner.</li>
+                  <li>A decision will be made based on the evidence provided.</li>
+                </ul>
+                <p className="mt-2">Failure to provide requested information may affect the outcome of a dispute. Amano's decision shall be final unless otherwise required by law.</p>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-slate-800 text-base mb-2">9. Prohibited Transactions</h3>
+                <p className="mb-2">The following transactions are prohibited:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Illegal products or services.</li>
+                  <li>Fraudulent schemes.</li>
+                  <li>Money laundering activities.</li>
+                  <li>Terrorism financing.</li>
+                  <li>Stolen goods.</li>
+                  <li>Counterfeit products.</li>
+                  <li>Weapons, explosives, or restricted items.</li>
+                  <li>Adult or obscene content prohibited by law.</li>
+                  <li>Transactions violating intellectual property rights.</li>
+                  <li>Transactions intended to evade taxes or regulations.</li>
+                  <li>Any activity prohibited under Pakistani law.</li>
+                </ul>
+                <p className="mt-2 text-slate-800 font-medium">Amano may suspend or terminate transactions involving prohibited activities without prior notice.</p>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-slate-800 text-base mb-2">10. Refund Policy</h3>
+                <p className="mb-2">Refunds are not automatic and are determined based on transaction status and dispute outcomes. Refunds may be issued when:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Both parties agree to cancel the transaction.</li>
+                  <li>The seller fails to deliver the agreed product or service.</li>
+                  <li>A dispute investigation supports the buyer's claim.</li>
+                  <li>Amano determines that fraud or unauthorized activity has occurred.</li>
+                </ul>
+                <p className="mt-2">Approved refunds will be processed through the original payment method whenever reasonably possible.</p>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-slate-800 text-base mb-2">11. Account Suspension and Termination</h3>
+                <p className="mb-2">Amano may suspend, restrict, or terminate accounts for:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Violations of these Terms.</li>
+                  <li>Fraudulent activity.</li>
+                  <li>Providing false information.</li>
+                  <li>Abuse of the platform or dispute process.</li>
+                  <li>Legal or regulatory requirements.</li>
+                  <li>Security concerns.</li>
+                </ul>
+                <p className="mt-2">Suspension or termination does not remove a user's obligation to resolve outstanding transactions.</p>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-slate-800 text-base mb-2">12. Limitation of Liability</h3>
+                <p className="mb-2">Amano provides its services on an "as available" basis. To the maximum extent permitted by law:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Amano is not responsible for the quality, legality, safety, or suitability of products or services exchanged between users.</li>
+                  <li>Amano is not liable for indirect, incidental, consequential, or special damages.</li>
+                  <li>Amano is not responsible for losses resulting from user misconduct, inaccurate information, technical failures, third-party services, or events beyond its reasonable control.</li>
+                </ul>
+                <p className="mt-2">Amano's role is limited to facilitating transaction management and dispute review.</p>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-slate-800 text-base mb-2">13. Governing Law</h3>
+                <p>These Terms shall be governed by and interpreted in accordance with the laws of the Islamic Republic of Pakistan. Any legal dispute arising from the use of Amano's services shall be subject to the jurisdiction of the competent courts of Pakistan.</p>
+              </section>
+
+              <section>
+                <h3 className="font-bold text-slate-800 text-base mb-2">14. Changes to Terms</h3>
+                <p>Amano may update these Terms from time to time. Updated Terms become effective upon publication on the Amano website or platform. Continued use of Amano's services after changes are published constitutes acceptance of the revised Terms. Users are encouraged to review these Terms periodically.</p>
+              </section>
+            </div>
+            
+            {/* Modal Footer */}
+            <div className="p-6 border-t border-slate-100 bg-white">
+              <label className="flex items-center gap-3 cursor-pointer group mb-4 p-4 bg-blue-50/50 rounded-xl border border-blue-100/50 hover:bg-blue-50 transition-colors">
+                <div className="relative flex items-center justify-center">
+                  <input 
+                    type="checkbox" 
+                    checked={termsChecked}
+                    onChange={(e) => setTermsChecked(e.target.checked)}
+                    className="w-5 h-5 appearance-none border-2 border-slate-300 rounded-md checked:bg-primary checked:border-primary transition-colors cursor-pointer"
+                  />
+                  {termsChecked && <CheckSquare className="absolute w-4 h-4 text-white pointer-events-none" strokeWidth={3} />}
+                </div>
+                <span className="text-sm font-bold text-slate-700">
+                  I have read and agree to the Amano Terms of Service
+                </span>
+              </label>
+              
+              <button
+                type="button"
+                onClick={() => setShowTermsModal(false)}
+                className="w-full bg-slate-800 hover:bg-slate-900 text-white py-3 rounded-xl font-bold transition-all shadow-md flex items-center justify-center gap-2"
+              >
+                Close Window
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
