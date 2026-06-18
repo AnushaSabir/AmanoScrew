@@ -98,7 +98,19 @@ export default function SettingsPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Mobile Number</label>
-                  <input type="tel" disabled value={profileData.phone || 'Not provided'} className="w-full p-3 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-500 cursor-not-allowed" />
+                  <input 
+                    type="tel" 
+                    value={profileData.phone || ''} 
+                    onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
+                    onBlur={async (e) => {
+                      if (user?.id) {
+                        await supabase.from('profiles').update({ phone: e.target.value }).eq('id', user.id);
+                      }
+                    }}
+                    className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary" 
+                    placeholder="Enter mobile number" 
+                  />
+                  <p className="text-[10px] text-green-600 font-medium mt-1">Changes are saved automatically</p>
                 </div>
               </div>
             </>
