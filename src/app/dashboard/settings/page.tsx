@@ -27,13 +27,24 @@ export default function SettingsPage() {
       
       if (!error && data) {
         setProfileData({
-          full_name: data.full_name || '',
+          full_name: data.full_name || user.name || '',
           email: data.email || user.email || '',
           phone: data.phone || ''
+        });
+      } else {
+        setProfileData({
+          full_name: user.name || '',
+          email: user.email || '',
+          phone: ''
         });
       }
     } catch (err) {
       console.error(err);
+      setProfileData({
+        full_name: user.name || '',
+        email: user.email || '',
+        phone: ''
+      });
     } finally {
       setIsLoading(false);
     }
@@ -86,13 +97,8 @@ export default function SettingsPage() {
                   <input type="email" disabled value={profileData.email} className="w-full p-3 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-500 cursor-not-allowed" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Mobile Number (Optional)</label>
-                  <input type="tel" value={profileData.phone || ''} onChange={(e) => setProfileData({...profileData, phone: e.target.value})} className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="Enter mobile number" />
-                </div>
-                <div className="pt-4 flex justify-end">
-                  <button className="px-6 py-2.5 bg-primary text-white text-sm font-bold rounded-xl shadow-md shadow-primary/20 hover:bg-primary/90 transition-colors">
-                    Save Changes
-                  </button>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Mobile Number</label>
+                  <input type="tel" disabled value={profileData.phone || 'Not provided'} className="w-full p-3 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-500 cursor-not-allowed" />
                 </div>
               </div>
             </>
