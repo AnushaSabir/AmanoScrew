@@ -135,10 +135,6 @@ export default function DashboardLayout({
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="p-3 border-t border-slate-100 text-center bg-slate-50">
-                    <button className="text-xs font-bold text-slate-500 hover:text-primary transition-colors">View All Settings</button>
-                  </div>
                 </div>
               )}
             </div>
