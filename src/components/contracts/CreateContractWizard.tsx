@@ -106,6 +106,7 @@ export default function CreateContractWizard() {
         currency: formData.currency,
         buyer_id: buyerId,
         seller_id: sellerId,
+        initiator_role: formData.role,
         counterparty_email: formData.counterpartyEmail,
         counterparty_phone: formData.counterpartyMobile,
         counterparty_name: formData.counterpartyName,
