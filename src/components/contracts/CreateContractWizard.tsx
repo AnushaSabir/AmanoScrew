@@ -109,7 +109,6 @@ export default function CreateContractWizard() {
         counterparty_email: formData.counterpartyEmail,
         counterparty_phone: formData.counterpartyMobile,
         counterparty_name: formData.counterpartyName,
-        initiator_role: formData.role,
         scope: formData.scope,
         timeline: formData.timeline,
         milestones: formData.milestones,
