@@ -94,7 +94,7 @@ export default function LandingPage() {
               <div className="flex flex-col items-center lg:items-start gap-6 mb-12">
                 <Link
                   href={user ? "/dashboard" : "/login"}
-                  className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white px-16 py-6 rounded-full text-2xl font-black tracking-wide transition-all shadow-2xl shadow-primary/40 flex items-center justify-center gap-4 hover:-translate-y-1.5 hover:shadow-primary/50"
+                  className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white px-8 md:px-16 py-4 md:py-6 rounded-full text-lg md:text-2xl font-black tracking-wide transition-all shadow-2xl shadow-primary/40 flex items-center justify-center gap-4 hover:-translate-y-1.5 hover:shadow-primary/50"
                 >
                   START A DEAL
                   <ArrowRight className="h-8 w-8" />
