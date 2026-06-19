@@ -97,7 +97,7 @@ export default function CreateContractWizard() {
       const buyerId = formData.role === 'Buyer' ? user.id : counterpartyId;
       const sellerId = formData.role === 'Seller' ? user.id : counterpartyId;
 
-      const { data, error: insertError } = await supabase.from('contracts').insert({
+      const contractPayload = {
         title: formData.title,
         status: 'Pending Approval',
         deal_type: formData.dealType,
@@ -116,11 +116,21 @@ export default function CreateContractWizard() {
         conditions: formData.conditions,
         notes: formData.notes,
         item_picture_url: itemPictureUrl
-      }).select('id').single();
+      };
 
-      if (insertError) throw insertError;
+      const res = await fetch('/api/contracts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contractPayload),
+      });
 
-      setCreatedContractId(data.id);
+      const responseData = await res.json();
+
+      if (!res.ok) {
+        throw new Error(responseData.error || 'Failed to create contract');
+      }
+
+      setCreatedContractId(responseData.id);
       
       // If no counterparty ID was found but an email was provided, send an invite
       if (!counterpartyId && formData.counterpartyEmail) {
