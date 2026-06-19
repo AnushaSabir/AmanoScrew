@@ -32,8 +32,8 @@ export default function LandingPage() {
       <header className="fixed top-0 z-50 w-full glass-card border-b border-slate-200/50">
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Shield className="h-8 w-8 text-blue-500" fill="currentColor" />
-            <span className="text-2xl font-bold text-blue-500 tracking-tight">AMANO</span>
+            <Shield className="h-8 w-8 text-blue-900" fill="currentColor" />
+            <span className="text-2xl font-bold text-blue-900 tracking-tight">AMANO</span>
           </div>
           <nav className="hidden md:flex gap-8">
             <Link href="#how-it-works" className="text-sm font-semibold text-slate-600 hover:text-primary transition-colors">How it Works</Link>
