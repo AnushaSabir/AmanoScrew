@@ -7,13 +7,22 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function POST(request: Request) {
   try {
+    if (!supabaseUrl || !supabaseServiceKey) {
+      return NextResponse.json({ error: 'Supabase server configuration is missing.' }, { status: 500 });
+    }
+
     const contractData = await request.json();
 
     const { data, error } = await supabaseAdmin.from('contracts').insert(contractData).select('id').single();
 
     if (error) {
       console.error('Insert Error in API route:', error);
-      return NextResponse.json({ error: error.message || 'Failed to create contract' }, { status: 500 });
+      return NextResponse.json({
+        error: error.message || 'Failed to create contract',
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+      }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, id: data.id });

@@ -68,6 +68,25 @@ export default function CreateContractWizard() {
       setError("You must be logged in to create a contract.");
       return;
     }
+
+    const amount = Number(formData.amount);
+    if (!formData.title.trim()) {
+      setError("Please enter a contract title.");
+      return;
+    }
+    if (!formData.dealType) {
+      setError("Please select a deal type.");
+      return;
+    }
+    if (!Number.isFinite(amount) || amount <= 0) {
+      setError("Please enter a valid contract amount.");
+      return;
+    }
+    if (!formData.counterpartyEmail.trim() && !formData.counterpartyMobile.trim()) {
+      setError("Please enter the counterparty email or mobile number.");
+      return;
+    }
+
     setIsSubmitting(true);
     setError("");
 
@@ -102,7 +121,7 @@ export default function CreateContractWizard() {
         status: 'Pending Approval',
         deal_type: formData.dealType,
         nature_of_deal: formData.natureOfDeal,
-        amount: parseFloat(formData.amount),
+        amount,
         currency: formData.currency,
         buyer_id: buyerId,
         seller_id: sellerId,
@@ -549,7 +568,7 @@ export default function CreateContractWizard() {
           </button>
           
           {error && (
-            <div className="absolute -top-12 right-6 bg-red-100 text-red-600 text-xs font-bold px-4 py-2 rounded-lg shadow-sm border border-red-200 animate-in fade-in slide-in-from-bottom-2">
+            <div className="max-w-sm bg-red-100 text-red-600 text-xs font-bold px-4 py-2 rounded-lg shadow-sm border border-red-200 animate-in fade-in slide-in-from-bottom-2">
               {error}
             </div>
           )}
