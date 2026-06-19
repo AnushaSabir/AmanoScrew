@@ -10,6 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.useamano.com"),
   title: "Amano Secure Escrow - AI-Powered Transactions",
   description: "Amano is an AI-powered escrow platform that protects online transactions through secure payment holding, verification, and fraud prevention.",
 };
