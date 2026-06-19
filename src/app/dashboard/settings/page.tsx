@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Settings, User, Shield, Bell, CheckCircle } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { User, Shield, Bell, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 
@@ -10,14 +10,9 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile');
   const [profileData, setProfileData] = useState({ full_name: '', email: '', phone: '' });
   const [isLoading, setIsLoading] = useState(true);
+  const [phoneSaveState, setPhoneSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
-  useEffect(() => {
-    if (user) {
-      fetchProfile();
-    }
-  }, [user]);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -48,7 +43,13 @@ export default function SettingsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchProfile();
+    }
+  }, [user, fetchProfile]);
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       <div>
@@ -100,17 +101,34 @@ export default function SettingsPage() {
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Mobile Number</label>
                   <input 
                     type="tel" 
+                    inputMode="tel"
                     value={profileData.phone || ''} 
-                    onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
+                    onChange={(e) => {
+                      setPhoneSaveState('idle');
+                      setProfileData({...profileData, phone: e.target.value});
+                    }}
                     onBlur={async (e) => {
                       if (user?.id) {
-                        await supabase.from('profiles').update({ phone: e.target.value }).eq('id', user.id);
+                        setPhoneSaveState('saving');
+                        const { error } = await supabase
+                          .from('profiles')
+                          .update({ phone: e.target.value.trim() || null })
+                          .eq('id', user.id);
+                        setPhoneSaveState(error ? 'error' : 'saved');
                       }
                     }}
                     className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary" 
-                    placeholder="Enter mobile number" 
+                    placeholder="+92 300 1234567"
                   />
-                  <p className="text-[10px] text-green-600 font-medium mt-1">Changes are saved automatically</p>
+                  <p className={`text-[10px] font-medium mt-1 ${phoneSaveState === 'error' ? 'text-red-600' : 'text-green-600'}`}>
+                    {phoneSaveState === 'saving'
+                      ? 'Saving mobile number...'
+                      : phoneSaveState === 'saved'
+                        ? 'Mobile number saved'
+                        : phoneSaveState === 'error'
+                          ? 'Mobile number could not be saved'
+                          : 'Changes are saved automatically'}
+                  </p>
                 </div>
               </div>
             </>

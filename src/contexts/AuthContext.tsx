@@ -7,7 +7,7 @@ import { User } from '@supabase/supabase-js';
 interface AuthContextType {
   user: any | null; // We use any to accommodate the profile data
   login: (email: string, pass: string) => Promise<{ success: boolean; error?: string }>;
-  register: (name: string, email: string, pass: string, kycData?: { type: string; frontUrl: string; backUrl?: string }) => Promise<{ success: boolean; error?: string }>;
+  register: (name: string, email: string, pass: string, mobile?: string, kycData?: { type: string; frontUrl: string; backUrl?: string }) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   isLoading: boolean;
 }
@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const register = async (name: string, email: string, pass: string, kycData?: { type: string; frontUrl: string; backUrl?: string }) => {
+  const register = async (name: string, email: string, pass: string, mobile?: string, kycData?: { type: string; frontUrl: string; backUrl?: string }) => {
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -99,6 +99,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             id: data.user.id,
             email: email,
             full_name: name,
+            phone: mobile?.trim() || null,
             kyc_status: kycData ? 'Pending' : 'Unverified',
             kyc_doc_type: kycData?.type,
             kyc_doc_front: kycData?.frontUrl,

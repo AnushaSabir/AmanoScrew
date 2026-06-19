@@ -3,7 +3,8 @@ ALTER TABLE public.profiles
 ADD COLUMN IF NOT EXISTS kyc_status text DEFAULT 'Pending',
 ADD COLUMN IF NOT EXISTS kyc_doc_type text,
 ADD COLUMN IF NOT EXISTS kyc_doc_front text,
-ADD COLUMN IF NOT EXISTS kyc_doc_back text;
+ADD COLUMN IF NOT EXISTS kyc_doc_back text,
+ADD COLUMN IF NOT EXISTS phone text;
 
 -- 2. Create Storage Bucket for KYC Documents
 insert into storage.buckets (id, name, public)

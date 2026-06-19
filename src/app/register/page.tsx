@@ -103,7 +103,7 @@ export default function RegisterPage() {
         backUrl: backUrl || undefined
       };
 
-      const { success, error: authError } = await register(name, email, password, kycData);
+      const { success, error: authError } = await register(name, email, password, mobile, kycData);
       if (success) {
         try {
           await fetch('/api/auth/welcome-email', {
@@ -205,6 +205,7 @@ export default function RegisterPage() {
                 <input
                   type="tel"
                   required
+                  inputMode="tel"
                   value={mobile}
                   onChange={(e) => setMobile(e.target.value)}
                   className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"

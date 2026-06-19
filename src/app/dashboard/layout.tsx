@@ -24,12 +24,21 @@ export default function DashboardLayout({
   const { user, isLoading, logout } = useAuth();
   const router = useRouter();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notificationsRead, setNotificationsRead] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("amano-notifications-read") === "true";
+  });
 
   useEffect(() => {
     if (!isLoading && !user) {
       router.push("/login");
     }
   }, [user, isLoading, router]);
+
+  const markAllNotificationsRead = () => {
+    setNotificationsRead(true);
+    localStorage.setItem("amano-notifications-read", "true");
+  };
 
   if (isLoading || !user) {
     return <div className="min-h-screen flex items-center justify-center bg-[#F7F9FC]">Loading...</div>;
@@ -41,8 +50,8 @@ export default function DashboardLayout({
       <aside className="w-full md:w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
         <div className="h-16 px-6 border-b border-slate-100 flex items-center justify-between md:justify-start">
           <Link href="/" className="flex items-center gap-2">
-            <Shield className="h-7 w-7 text-blue-600" fill="currentColor" />
-            <span className="text-xl font-bold text-blue-600 tracking-tight">AMANO</span>
+            <Shield className="h-7 w-7 text-[#0B1F3A]" fill="currentColor" />
+            <span className="text-xl font-bold text-[#0B1F3A] tracking-tight">AMANO</span>
           </Link>
         </div>
         
@@ -113,17 +122,26 @@ export default function DashboardLayout({
                 className={`relative p-2 transition-colors rounded-lg ${showNotifications ? 'bg-slate-100 text-slate-800' : 'text-slate-400 hover:text-slate-600'}`}
               >
                 <Bell className="h-5 w-5" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                {!notificationsRead && (
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                )}
               </button>
               
               {showNotifications && (
                 <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-slate-200 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                     <h3 className="font-bold text-slate-800 text-sm">Notifications</h3>
-                    <span className="text-xs text-primary font-bold cursor-pointer hover:underline">Mark all read</span>
+                    <button
+                      type="button"
+                      onClick={markAllNotificationsRead}
+                      disabled={notificationsRead}
+                      className="text-xs text-primary font-bold hover:underline disabled:text-slate-400 disabled:no-underline disabled:cursor-not-allowed"
+                    >
+                      {notificationsRead ? "All read" : "Mark all read"}
+                    </button>
                   </div>
                   <div className="divide-y divide-slate-100 max-h-[300px] overflow-y-auto">
-                    <div className="p-4 bg-blue-50/50 hover:bg-slate-50 transition-colors cursor-pointer">
+                    <div className={`p-4 hover:bg-slate-50 transition-colors cursor-pointer ${notificationsRead ? 'bg-white' : 'bg-blue-50/50'}`}>
                       <div className="flex gap-3">
                         <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
                           <Bell className="h-4 w-4 text-primary" />
