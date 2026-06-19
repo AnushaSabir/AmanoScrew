@@ -1,64 +1,107 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Bot, ShieldCheck, Download, ArrowLeft, FileText } from 'lucide-react';
+import { Bot, ShieldCheck, Download, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
 
-// Mock data (in a real app, fetch based on params.id)
-const MOCK_CONTRACT = {
-  id: "AM-8842",
-  title: "Website Development Phase 1",
-  buyerName: "TechNova Inc.",
-  sellerName: "John Doe Development",
-  amount: "4500.00",
-  currency: "USD",
-  scope: "Full-stack development of the main corporate website including landing page, about us, and contact forms. Must be responsive and use Next.js.",
-  timeline: "14 days after approval",
-  conditions: "Funds will be released upon successful deployment to production environment and verification of zero critical bugs.",
+type DraftContractData = {
+  id: string;
+  title: string;
+  buyerName: string;
+  sellerName: string;
+  amount: string;
+  currency: string;
+  scope: string;
+  timeline: string;
+  conditions: string;
 };
 
 export default function DraftContractPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
   const [isGenerating, setIsGenerating] = useState(true);
+  const [contract, setContract] = useState<DraftContractData | null>(null);
   const [generatedContract, setGeneratedContract] = useState<{ id: string, content: string } | null>(null);
 
   useEffect(() => {
-    // Simulate algorithm fetching details and AI drafting
-    const timer = setTimeout(() => {
-      const uniqueId = `AMANO-PK-INTL-${Math.floor(10000 + Math.random() * 90000)}`;
-      const legalDraft = `
+    const fetchAndDraftContract = async () => {
+      const { data, error } = await supabase
+        .from('contracts')
+        .select(`
+          *,
+          buyer:profiles!buyer_id(full_name),
+          seller:profiles!seller_id(full_name)
+        `)
+        .eq('id', id)
+        .single();
+
+      if (error || !data) {
+        setIsGenerating(false);
+        return;
+      }
+
+      const contractData: DraftContractData = {
+        id: data.id,
+        title: data.title,
+        buyerName: data.buyer?.full_name || (data.initiator_role === 'Buyer' ? 'Buyer' : data.counterparty_name) || 'Buyer',
+        sellerName: data.seller?.full_name || (data.initiator_role === 'Seller' ? 'Seller' : data.counterparty_name) || 'Seller',
+        amount: Number(data.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+        currency: data.currency || 'PKR',
+        scope: data.scope || data.nature_of_deal || 'No scope provided.',
+        timeline: data.timeline || 'To be agreed by both parties.',
+        conditions: data.conditions || 'Funds will be released when the agreed conditions are met.',
+      };
+
+      setContract(contractData);
+
+      // Simulate algorithm fetching details and AI drafting
+      const timer = setTimeout(() => {
+        const uniqueId = `AMANO-PK-INTL-${Math.floor(10000 + Math.random() * 90000)}`;
+        const legalDraft = `
 CONTRACT OF AGREEMENT
 Reference ID: ${uniqueId}
+Platform Contract ID: ${contractData.id}
+Title: ${contractData.title}
 Date: ${new Date().toLocaleDateString()}
 
 This legally binding contract is electronically generated and executed via the Amano Secure Escrow platform. It complies with the electronic transaction laws of Pakistan (Electronic Transactions Ordinance, 2002) and international digital contract standards.
 
 PARTIES:
-Buyer: ${MOCK_CONTRACT.buyerName}
-Seller: ${MOCK_CONTRACT.sellerName}
+Buyer: ${contractData.buyerName}
+Seller: ${contractData.sellerName}
 
 1. CONSIDERATION & PAYMENT
-The agreed transaction amount is ${MOCK_CONTRACT.currency} ${MOCK_CONTRACT.amount}. These funds have been verified and secured in the Amano Escrow vault.
+The agreed transaction amount is ${contractData.currency} ${contractData.amount}. These funds have been verified and secured in the Amano Escrow vault.
 
 2. SCOPE OF WORK / OBLIGATIONS
-${MOCK_CONTRACT.scope}
+${contractData.scope}
 
 3. TIMELINE & DELIVERY
-The Seller agrees to complete the delivery within: ${MOCK_CONTRACT.timeline}.
+The Seller agrees to complete the delivery within: ${contractData.timeline}.
 
 4. CONDITIONS OF RELEASE
-${MOCK_CONTRACT.conditions}
+${contractData.conditions}
 
 5. DISPUTE RESOLUTION
 Any dispute arising out of this agreement shall be subject to the mediation and arbitration services provided by Amano Escrow.
 
 By their electronic approval on the platform, both parties assent to these terms.
-      `.trim();
-      setGeneratedContract({ id: uniqueId, content: legalDraft });
-      setIsGenerating(false);
-    }, 3000);
+        `.trim();
+        setGeneratedContract({ id: uniqueId, content: legalDraft });
+        setIsGenerating(false);
+      }, 3000);
 
-    return () => clearTimeout(timer);
+      return timer;
+    };
+
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    fetchAndDraftContract().then((draftTimer) => {
+      timer = draftTimer;
+    });
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [id]);
 
   const handleDownloadPDF = () => {
@@ -104,7 +147,7 @@ By their electronic approval on the platform, both parties assent to these terms
           <ArrowLeft className="h-4 w-4" /> Back to Contract Overview
         </Link>
         <h1 className="text-2xl font-bold text-slate-800 tracking-tight">AI Contract Generation</h1>
-        <p className="text-slate-500 mt-2">Payment verified. Drafting official document for Contract {id}</p>
+        <p className="text-slate-500 mt-2">Payment verified. Drafting official document for {contract?.title || `Contract ${id}`}</p>
       </div>
 
       <div className="bg-gradient-to-br from-indigo-50 to-blue-50 p-6 md:p-10 rounded-3xl border border-indigo-100 shadow-sm">
@@ -133,6 +176,11 @@ By their electronic approval on the platform, both parties assent to these terms
                 </div>
               </div>
             ) : (
+              !generatedContract ? (
+                <div className="bg-white p-6 rounded-xl border border-red-100 text-red-600 font-bold">
+                  Contract details could not be found.
+                </div>
+              ) : (
               <div className="mt-4 bg-white p-6 md:p-8 rounded-2xl border border-indigo-100 shadow-md space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
                   <div>
@@ -154,6 +202,7 @@ By their electronic approval on the platform, both parties assent to these terms
                   {generatedContract?.content}
                 </div>
               </div>
+              )
             )}
           </div>
         </div>

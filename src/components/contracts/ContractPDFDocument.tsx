@@ -3,11 +3,27 @@ import { Download, ShieldCheck } from 'lucide-react';
 
 interface ContractPDFDocumentProps {
   contractId: string;
+  title: string;
+  buyerName: string;
+  sellerName: string;
   amount: string;
+  scope: string;
+  timeline: string;
+  conditions: string;
   status: string;
 }
 
-export default function ContractPDFDocument({ contractId, amount, status }: ContractPDFDocumentProps) {
+export default function ContractPDFDocument({
+  contractId,
+  title,
+  buyerName,
+  sellerName,
+  amount,
+  scope,
+  timeline,
+  conditions,
+  status,
+}: ContractPDFDocumentProps) {
   const isPrintable = ['Active Contract', 'Proof Uploaded', 'Buyer Approved', 'Completed'].includes(status);
 
   const handlePrint = () => {
@@ -36,6 +52,7 @@ export default function ContractPDFDocument({ contractId, amount, status }: Cont
             </div>
             <div className="text-right">
               <div className="text-xl font-bold text-slate-800">{contractId}</div>
+              <div className="text-sm text-slate-500 mt-1">{title}</div>
               <div className="text-sm text-slate-500 mt-1">Generated: {new Date().toLocaleDateString()}</div>
               <div className="inline-flex items-center gap-1 text-xs font-bold text-accent bg-green-50 px-2 py-1 rounded mt-2 border border-green-200">
                 <ShieldCheck className="h-3 w-3" /> SECURELY LOCKED
@@ -49,11 +66,11 @@ export default function ContractPDFDocument({ contractId, amount, status }: Cont
               <div className="grid grid-cols-2 gap-8">
                 <div>
                   <div className="text-sm font-bold text-slate-500 mb-1">Buyer</div>
-                  <div className="text-lg text-slate-900">TechNova Inc.</div>
+                  <div className="text-lg text-slate-900">{buyerName}</div>
                 </div>
                 <div>
                   <div className="text-sm font-bold text-slate-500 mb-1">Seller</div>
-                  <div className="text-lg text-slate-900">John Doe Development</div>
+                  <div className="text-lg text-slate-900">{sellerName}</div>
                 </div>
               </div>
             </section>
@@ -69,7 +86,25 @@ export default function ContractPDFDocument({ contractId, amount, status }: Cont
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wide border-b border-slate-200 pb-2 mb-4">3. Signatures & Digital Locks</h2>
+              <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wide border-b border-slate-200 pb-2 mb-4">3. Scope, Timeline & Release Conditions</h2>
+              <div className="space-y-5 text-sm text-slate-700">
+                <div>
+                  <div className="font-bold text-slate-500 mb-1">Scope of Work</div>
+                  <div className="whitespace-pre-wrap">{scope}</div>
+                </div>
+                <div>
+                  <div className="font-bold text-slate-500 mb-1">Timeline</div>
+                  <div>{timeline}</div>
+                </div>
+                <div>
+                  <div className="font-bold text-slate-500 mb-1">Conditions for Fund Release</div>
+                  <div className="whitespace-pre-wrap">{conditions}</div>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-slate-800 uppercase tracking-wide border-b border-slate-200 pb-2 mb-4">4. Signatures & Digital Locks</h2>
               <p className="text-sm text-slate-600 mb-6">
                 This document is a cryptographic representation of a legally binding smart contract established on the Amano Secure Escrow Platform. Both parties have cryptographically signed and approved these terms.
               </p>

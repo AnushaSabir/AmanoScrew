@@ -60,13 +60,21 @@ export default function ContractDetailPage({ params }: { params: Promise<{ id: s
       if (error) throw error;
 
       if (data) {
+        const currentUserName = user?.name || user?.email || 'Current User';
+        const buyerName = data.buyer?.full_name
+          || (data.initiator_role === 'Buyer' ? currentUserName : data.counterparty_name)
+          || 'Buyer';
+        const sellerName = data.seller?.full_name
+          || (data.initiator_role === 'Seller' ? currentUserName : data.counterparty_name)
+          || 'Seller';
+
         // Transform DB data to match ContractData interface
         setContractData({
           id: data.id,
           title: data.title,
-          buyerName: data.buyer?.full_name || 'Buyer',
-          sellerName: data.seller?.full_name || 'Seller',
-          amount: data.amount.toString(),
+          buyerName,
+          sellerName,
+          amount: Number(data.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
           currency: data.currency,
           scope: data.scope || data.nature_of_deal || 'No scope provided',
           timeline: data.timeline || 'TBD',
@@ -117,7 +125,13 @@ export default function ContractDetailPage({ params }: { params: Promise<{ id: s
           
           <ContractPDFDocument 
             contractId={contractData.id.split('-')[0]} 
-            amount={`$${contractData.amount}`} 
+            title={contractData.title}
+            buyerName={contractData.buyerName}
+            sellerName={contractData.sellerName}
+            amount={`${contractData.currency} ${contractData.amount}`}
+            scope={contractData.scope}
+            timeline={contractData.timeline}
+            conditions={contractData.conditions}
             status={contractStatus} 
           />
         </div>

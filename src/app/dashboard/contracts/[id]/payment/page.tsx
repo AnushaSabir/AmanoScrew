@@ -1,20 +1,58 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Building, QrCode, ShieldCheck, Smartphone, CheckCircle, Copy } from 'lucide-react';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
+
+type PaymentContract = {
+  id: string;
+  title: string;
+  amount: number;
+  currency: string;
+};
 
 export default function PaymentPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
   const router = useRouter();
+  const [contract, setContract] = useState<PaymentContract | null>(null);
+  const [isLoadingContract, setIsLoadingContract] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentDone, setPaymentDone] = useState(false);
   const [alertSent, setAlertSent] = useState(false);
   const [adminVerified, setAdminVerified] = useState(false);
 
+  useEffect(() => {
+    const fetchContract = async () => {
+      const { data, error } = await supabase
+        .from('contracts')
+        .select('id,title,amount,currency')
+        .eq('id', id)
+        .single();
+
+      if (!error && data) {
+        setContract({
+          id: data.id,
+          title: data.title,
+          amount: Number(data.amount),
+          currency: data.currency || 'PKR',
+        });
+      }
+
+      setIsLoadingContract(false);
+    };
+
+    fetchContract();
+  }, [id]);
+
+  const formattedAmount = contract
+    ? `${contract.currency} ${contract.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    : 'Loading...';
+
   const handleConfirmPayment = () => {
     setIsProcessing(true);
+    supabase.from('contracts').update({ status: 'Payment Verifying' }).eq('id', id).then(() => {});
     
     // Simulate payment processing
     setTimeout(() => {
@@ -30,11 +68,20 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
 
   const handleSimulateAdminVerify = () => {
     setAdminVerified(true);
+    supabase.from('contracts').update({ status: 'Active Contract' }).eq('id', id).then(() => {});
     // After admin verifies, navigate to draft page
     setTimeout(() => {
       router.push(`/dashboard/contracts/${id}/draft`);
     }, 1500);
   };
+
+  if (isLoadingContract) {
+    return <div className="p-20 text-center">Loading payment details...</div>;
+  }
+
+  if (!contract) {
+    return <div className="p-20 text-center">Contract not found.</div>;
+  }
 
   return (
     <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-8 pb-20">
@@ -44,7 +91,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
           <ArrowLeft className="h-4 w-4" /> Back to Contract
         </Link>
         <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Deposit Funds into Escrow</h1>
-        <p className="text-slate-500 mt-2">Securely deposit the agreed amount for Contract {id}</p>
+        <p className="text-slate-500 mt-2">Securely deposit the agreed amount for {contract.title}</p>
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -60,7 +107,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
           </div>
           <div className="text-right">
             <div className="text-sm text-slate-500">Amount Due</div>
-            <div className="text-2xl font-bold text-slate-900">$4500.00</div>
+            <div className="text-2xl font-bold text-slate-900">{formattedAmount}</div>
           </div>
         </div>
 
@@ -105,7 +152,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
 
               <div className="bg-amber-50 p-4 rounded-xl border border-amber-200 flex gap-3 text-amber-800 text-sm">
                 <ShieldCheck className="h-5 w-5 shrink-0 text-amber-600" />
-                <p><strong>Note:</strong> Please ensure you deposit the exact amount of <strong>$4500.00</strong>. After making the transfer, click the button below. Your payment will be manually verified by our team.</p>
+                <p><strong>Note:</strong> Please ensure you deposit the exact amount of <strong>{formattedAmount}</strong>. After making the transfer, click the button below. Your payment will be manually verified by our team.</p>
               </div>
 
               <button 
@@ -119,7 +166,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
                     Marking as Paid...
                   </>
                 ) : (
-                  <>Confirm, I have paid $4500.00</>
+                  <>Confirm, I have paid {formattedAmount}</>
                 )}
               </button>
             </>
@@ -139,7 +186,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
                   <Smartphone className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
                   <div className="text-left">
                     <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">Simulated SMS to Admin</div>
-                    <div className="text-sm">"User marked $4500.00 as paid for Contract {id} via Bank Transfer. Please verify receipt in Admin Panel."</div>
+                    <div className="text-sm">User marked {formattedAmount} as paid for Contract {id} via Bank Transfer. Please verify receipt in Admin Panel.</div>
                   </div>
                 </div>
               </div>
