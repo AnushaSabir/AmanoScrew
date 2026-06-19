@@ -10,7 +10,6 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile');
   const [profileData, setProfileData] = useState({ full_name: '', email: '', phone: '' });
   const [isLoading, setIsLoading] = useState(true);
-  const [phoneSaveState, setPhoneSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
   const fetchProfile = useCallback(async () => {
     try {
@@ -101,34 +100,11 @@ export default function SettingsPage() {
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Mobile Number</label>
                   <input 
                     type="tel" 
-                    inputMode="tel"
-                    value={profileData.phone || ''} 
-                    onChange={(e) => {
-                      setPhoneSaveState('idle');
-                      setProfileData({...profileData, phone: e.target.value});
-                    }}
-                    onBlur={async (e) => {
-                      if (user?.id) {
-                        setPhoneSaveState('saving');
-                        const { error } = await supabase
-                          .from('profiles')
-                          .update({ phone: e.target.value.trim() || null })
-                          .eq('id', user.id);
-                        setPhoneSaveState(error ? 'error' : 'saved');
-                      }
-                    }}
-                    className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary" 
-                    placeholder="+92 300 1234567"
+                    disabled
+                    value={profileData.phone || 'Not provided'}
+                    className="w-full p-3 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-500 cursor-not-allowed"
                   />
-                  <p className={`text-[10px] font-medium mt-1 ${phoneSaveState === 'error' ? 'text-red-600' : 'text-green-600'}`}>
-                    {phoneSaveState === 'saving'
-                      ? 'Saving mobile number...'
-                      : phoneSaveState === 'saved'
-                        ? 'Mobile number saved'
-                        : phoneSaveState === 'error'
-                          ? 'Mobile number could not be saved'
-                          : 'Changes are saved automatically'}
-                  </p>
+                  <p className="text-xs text-slate-400 mt-2">Mobile number cannot be changed after account creation.</p>
                 </div>
               </div>
             </>
