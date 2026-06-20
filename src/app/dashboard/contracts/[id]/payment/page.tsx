@@ -84,7 +84,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
   }
 
   return (
-    <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-8 pb-20">
+    <div className="p-4 sm:p-6 md:p-10 max-w-4xl mx-auto space-y-8 pb-20">
       
       <div>
         <Link href={`/dashboard/contracts/${id}`} className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors mb-4">
@@ -95,7 +95,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+        <div className="p-4 sm:p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
               <ShieldCheck className="h-5 w-5 text-primary" />
@@ -111,7 +111,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id: string }
           </div>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-6">
           {!paymentDone ? (
             <>
               <div className="bg-slate-50 p-6 rounded-xl border border-slate-200">

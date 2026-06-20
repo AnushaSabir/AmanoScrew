@@ -19,9 +19,9 @@ export default function Terms() {
       </header>
 
       {/* Content */}
-      <main className="flex-1 container mx-auto px-4 py-12 max-w-4xl">
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 md:p-12 shadow-sm">
-          <h1 className="text-4xl font-extrabold text-slate-800 mb-8">Amano Terms of Service</h1>
+      <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-4xl">
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-8 md:p-12 shadow-sm">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-8">Amano Terms of Service</h1>
           
           <div className="space-y-8 text-slate-600 leading-relaxed">
             <section>

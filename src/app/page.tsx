@@ -67,7 +67,7 @@ export default function LandingPage() {
       </header>
 
       {/* SECTION 1 - HERO */}
-      <section className="pt-32 pb-20 md:pt-48 md:pb-32 px-4 relative">
+      <section className="pt-24 sm:pt-32 pb-16 sm:pb-20 md:pt-48 md:pb-32 px-4 relative">
         {/* Abstract Premium Background */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-slate-50 to-white -z-20"></div>
         <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
@@ -82,7 +82,7 @@ export default function LandingPage() {
                 <span>SSL Secured & Bank-Grade Encryption</span>
               </div>
               
-              <h1 className="text-5xl md:text-7xl font-extrabold text-primary mb-6 leading-[1.1] tracking-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-primary mb-6 leading-[1.1] tracking-tight">
                 Secure Payments <br />
                 Between <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-blue-400">Buyers & Sellers</span>
               </h1>
@@ -174,7 +174,7 @@ export default function LandingPage() {
       {/* SECTION: STATISTICS */}
       <section className="py-12 border-y border-slate-200 bg-white relative z-20">
         <div className="container mx-auto px-4 max-w-7xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-slate-100">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 md:divide-x divide-slate-100">
             <div className="text-center px-4">
               <div className="text-3xl md:text-4xl font-extrabold text-primary mb-1">$50M+</div>
               <div className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Protected Volume</div>
@@ -196,7 +196,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 2 - HOW IT WORKS (Modern Flow) */}
-      <section id="how-it-works" className="py-24 bg-slate-50 relative overflow-hidden">
+      <section id="how-it-works" className="py-16 md:py-24 bg-slate-50 relative overflow-hidden">
         <div className="container mx-auto px-4 max-w-7xl relative z-10">
           <div className="text-center mb-20">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-secondary text-sm font-bold mb-4">
@@ -236,7 +236,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 4 - SECURITY & TRUST */}
-      <section id="security" className="py-24 bg-primary text-white relative overflow-hidden">
+      <section id="security" className="py-16 md:py-24 bg-primary text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-secondary/20 to-transparent"></div>
         
@@ -246,7 +246,7 @@ export default function LandingPage() {
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white border border-white/20 text-sm font-bold mb-6 backdrop-blur-sm">
                 <Shield className="h-4 w-4 text-accent" /> Enterprise Security
               </div>
-              <h2 className="text-4xl font-extrabold mb-6 leading-tight">Bank-Grade Trust Architecture</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold mb-6 leading-tight">Bank-Grade Trust Architecture</h2>
               <p className="text-slate-300 text-lg mb-8 leading-relaxed">
                 We combine AI-driven monitoring with institutional-grade escrow vaults to ensure your money never moves until you say so.
               </p>
@@ -280,7 +280,7 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION: TESTIMONIALS */}
-      <section id="reviews" className="py-24 bg-white border-b border-slate-100">
+      <section id="reviews" className="py-16 md:py-24 bg-white border-b border-slate-100">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-extrabold text-primary mb-4">Trusted by Professionals</h2>
@@ -316,13 +316,13 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION 8 - FINAL CTA */}
-      <section className="py-24 relative overflow-hidden bg-slate-50 border-b border-slate-200">
+      <section className="py-16 md:py-24 relative overflow-hidden bg-slate-50 border-b border-slate-200">
         <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-50 via-slate-50 to-white -z-10"></div>
         <div className="container mx-auto px-4 max-w-4xl text-center">
           <div className="w-20 h-20 bg-white rounded-2xl shadow-xl flex items-center justify-center mx-auto mb-8 border border-slate-100">
             <Lock className="h-10 w-10 text-primary" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-primary mb-6 tracking-tight">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-primary mb-6 tracking-tight">
             Ready for Safe Transactions?
           </h2>
           <p className="text-xl text-slate-600 mb-10 max-w-2xl mx-auto font-medium">

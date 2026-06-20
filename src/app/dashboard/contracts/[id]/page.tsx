@@ -102,7 +102,7 @@ export default function ContractDetailPage({ params }: { params: Promise<{ id: s
   if (!contractData) return <div className="p-20 text-center">Contract not found.</div>;
 
   return (
-    <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8 pb-20">
+    <div className="p-4 sm:p-6 md:p-10 max-w-7xl mx-auto space-y-8 pb-20">
       
       {/* Header & Dev Tools */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -113,7 +113,7 @@ export default function ContractDetailPage({ params }: { params: Promise<{ id: s
           <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Contract Details</h1>
         </div>
         
-        <div className="flex items-center gap-4 bg-slate-50 p-2 rounded-xl border border-slate-200">
+        <div className="flex flex-wrap items-center gap-3 bg-slate-50 p-2 rounded-xl border border-slate-200">
           <div className="text-xs font-bold text-slate-400 px-2 uppercase tracking-wider hidden sm:block">Testing Tools:</div>
           <button 
             onClick={() => setCurrentUserRole(prev => prev === 'Buyer' ? 'Seller' : 'Buyer')}

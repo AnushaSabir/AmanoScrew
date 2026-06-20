@@ -50,13 +50,13 @@ export default function SettingsPage() {
     }
   }, [user, fetchProfile]);
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8">
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Settings</h1>
         <p className="text-sm text-slate-500 mt-1">Manage your account preferences and security settings.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
         <div className="md:col-span-1 space-y-2">
           <button 
             onClick={() => setActiveTab('profile')}
@@ -78,7 +78,7 @@ export default function SettingsPage() {
           </button>
         </div>
 
-        <div className="md:col-span-2 bg-white rounded-2xl border border-slate-200 p-8 shadow-sm min-h-[400px]">
+        <div className="md:col-span-2 bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm min-h-[400px]">
           {isLoading ? (
             <div className="flex justify-center items-center h-full">
               <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>

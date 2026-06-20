@@ -19,12 +19,12 @@ export default function Licenses() {
       </header>
 
       {/* Content */}
-      <main className="flex-1 container mx-auto px-4 py-12 max-w-4xl">
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 md:p-12 shadow-sm space-y-12">
+      <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-4xl">
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-8 md:p-12 shadow-sm space-y-12">
           
           {/* AML & KYC Policy */}
           <div>
-            <h1 className="text-4xl font-extrabold text-slate-800 mb-8">AML & KYC Policy</h1>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-8">AML & KYC Policy</h1>
             <div className="space-y-8 text-slate-600 leading-relaxed">
               <section>
                 <h2 className="text-xl font-bold text-slate-800 mb-3">Purpose</h2>
@@ -70,7 +70,7 @@ export default function Licenses() {
 
           {/* Acceptable Use Policy */}
           <div>
-            <h1 className="text-4xl font-extrabold text-slate-800 mb-8">Acceptable Use Policy</h1>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-8">Acceptable Use Policy</h1>
             <div className="space-y-8 text-slate-600 leading-relaxed">
               <section>
                 <h2 className="text-xl font-bold text-slate-800 mb-3">Prohibited Uses</h2>
@@ -104,7 +104,7 @@ export default function Licenses() {
 
           {/* Additional Legal Clauses */}
           <div>
-            <h1 className="text-4xl font-extrabold text-slate-800 mb-8">Additional Legal Clauses</h1>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-8">Additional Legal Clauses</h1>
             <div className="space-y-8 text-slate-600 leading-relaxed">
               <section>
                 <h2 className="text-xl font-bold text-slate-800 mb-3">No Guarantee Clause</h2>

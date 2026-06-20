@@ -50,7 +50,7 @@ export default function CreateDisputePage() {
   };
 
   return (
-    <div className="p-6 md:p-10 max-w-3xl mx-auto space-y-8 pb-20">
+    <div className="p-4 sm:p-6 md:p-10 max-w-3xl mx-auto space-y-8 pb-20">
       <div>
         <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors mb-4">
           <ArrowLeft className="h-4 w-4" /> Back to Dashboard
@@ -71,7 +71,7 @@ export default function CreateDisputePage() {
         {/* Step 1: Fetch Contract */}
         <div className="mb-8">
           <label className="block text-sm font-bold text-slate-700 mb-2">1. Enter Contract ID</label>
-          <form onSubmit={handleFetchContract} className="flex gap-3">
+          <form onSubmit={handleFetchContract} className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-slate-400" />
@@ -88,7 +88,7 @@ export default function CreateDisputePage() {
             <button 
               type="submit"
               disabled={isFetching || !contractId}
-              className="px-6 py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
+              className="px-6 py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isFetching ? (
                 <>
@@ -105,7 +105,7 @@ export default function CreateDisputePage() {
           <div className="animate-in fade-in slide-in-from-top-4 duration-500">
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 mb-8">
               <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Contract Details Fetched</h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <div className="text-xs text-slate-500 mb-1">Contract ID</div>
                   <div className="font-bold text-slate-800 flex items-center gap-2">
@@ -159,7 +159,7 @@ export default function CreateDisputePage() {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+              <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <p className="text-xs text-slate-500 max-w-sm">
                   Submitting this will freeze the contract. The counterparty will be notified via email to respond with their narrative.
                 </p>

@@ -40,7 +40,7 @@ export default function DisputesPage() {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8 pb-20">
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-8 pb-20">
       <div>
         <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Dispute Center</h1>
         <p className="text-sm text-slate-500 mt-1">Manage and resolve disagreements with the help of Amano AI and human mediators.</p>
@@ -62,9 +62,9 @@ export default function DisputesPage() {
               : dispute.initiator?.full_name;
 
             return (
-              <Link href={`/dashboard/disputes/${dispute.id}`} key={dispute.id} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:border-primary/50 hover:shadow-md transition-all group block">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center gap-4">
+              <Link href={`/dashboard/disputes/${dispute.id}`} key={dispute.id} className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-sm hover:border-primary/50 hover:shadow-md transition-all group block">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-4">
+                  <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center border border-amber-100 group-hover:bg-amber-100 transition-colors">
                       <AlertTriangle className="h-6 w-6 text-amber-600" />
                     </div>

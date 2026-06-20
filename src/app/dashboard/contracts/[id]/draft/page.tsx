@@ -141,7 +141,7 @@ By their electronic approval on the platform, both parties assent to these terms
   };
 
   return (
-    <div className="p-6 md:p-10 max-w-4xl mx-auto space-y-8 pb-20">
+    <div className="p-4 sm:p-6 md:p-10 max-w-4xl mx-auto space-y-8 pb-20">
       <div>
         <Link href={`/dashboard/contracts/${id}`} className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors mb-4">
           <ArrowLeft className="h-4 w-4" /> Back to Contract Overview
@@ -150,7 +150,7 @@ By their electronic approval on the platform, both parties assent to these terms
         <p className="text-slate-500 mt-2">Payment verified. Drafting official document for {contract?.title || `Contract ${id}`}</p>
       </div>
 
-      <div className="bg-gradient-to-br from-indigo-50 to-blue-50 p-6 md:p-10 rounded-3xl border border-indigo-100 shadow-sm">
+      <div className="bg-gradient-to-br from-indigo-50 to-blue-50 p-4 sm:p-6 md:p-10 rounded-3xl border border-indigo-100 shadow-sm">
         <div className="flex flex-col md:flex-row items-start gap-6">
           <div className="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center shrink-0 border border-indigo-100 text-indigo-600">
             <Bot className="h-8 w-8" />
@@ -181,7 +181,7 @@ By their electronic approval on the platform, both parties assent to these terms
                   Contract details could not be found.
                 </div>
               ) : (
-              <div className="mt-4 bg-white p-6 md:p-8 rounded-2xl border border-indigo-100 shadow-md space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="mt-4 bg-white p-4 sm:p-6 md:p-8 rounded-2xl border border-indigo-100 shadow-md space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
                   <div>
                     <div className="text-sm font-bold text-slate-500 flex items-center gap-2 mb-1">

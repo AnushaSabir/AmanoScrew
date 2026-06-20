@@ -153,12 +153,12 @@ export default function ContractNegotiationView({ initialData, currentUserRole, 
         
         {/* Actions Bar */}
         {!isLocked && (
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:flex-wrap sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Your Action Required:</span>
             </div>
             
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               {data.status === 'Approved' && (
                 <button onClick={handleAccept} className="flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-sm font-bold rounded-xl shadow-md shadow-primary/20 hover:bg-primary/90 transition-colors">
                   <Lock className="h-4 w-4" /> Final Approve & Lock
@@ -218,7 +218,7 @@ export default function ContractNegotiationView({ initialData, currentUserRole, 
               </div>
               <Link 
                 href={`/dashboard/contracts/${data.id}/release`}
-                className="px-6 py-2.5 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl transition-colors shadow-md shadow-accent/20 flex items-center gap-2 whitespace-nowrap"
+                className="px-6 py-2.5 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl transition-colors shadow-md shadow-accent/20 flex items-center justify-center gap-2"
               >
                 Go to Payment Release <ArrowRight className="h-4 w-4" />
               </Link>
@@ -230,7 +230,7 @@ export default function ContractNegotiationView({ initialData, currentUserRole, 
 
         {/* Contract Document */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="border-b border-slate-100 p-6 sm:p-8 flex justify-between items-start">
+          <div className="border-b border-slate-100 p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
             <div>
               <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Contract ID: {data.id}</div>
               <h2 className="text-2xl font-bold text-slate-800">{data.title}</h2>
@@ -238,7 +238,7 @@ export default function ContractNegotiationView({ initialData, currentUserRole, 
             <ContractStatusBadge status={data.status} className="text-sm px-3 py-1.5" />
           </div>
 
-          <div className="p-6 sm:p-8 space-y-8">
+          <div className="p-4 sm:p-6 md:p-8 space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Parties</h4>

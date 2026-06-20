@@ -210,7 +210,7 @@ export default function CreateContractWizard() {
       {/* Progress Header */}
       <div className="bg-slate-50 border-b border-slate-200 p-6 sm:p-8">
         <h2 className="text-xl font-bold text-slate-800 mb-6">Create New Contract</h2>
-        <div className="flex items-center justify-between relative">
+        <div className="flex items-center justify-between relative overflow-x-auto pb-8">
           <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-200 rounded-full z-0"></div>
           <div 
             className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-primary rounded-full z-0 transition-all duration-300"
@@ -541,7 +541,7 @@ export default function CreateContractWizard() {
       </div>
 
       {/* Footer Actions */}
-      <div className="p-6 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+      <div className="p-4 sm:p-6 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 relative">
         {currentStep > 1 ? (
           <button 
             type="button" 
@@ -559,7 +559,7 @@ export default function CreateContractWizard() {
           </button>
         )}
 
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
           <button 
             type="button"
             className="flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
@@ -577,7 +577,7 @@ export default function CreateContractWizard() {
             <button 
               type="button" 
               onClick={nextStep}
-              className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-primary rounded-xl hover:bg-primary/90 transition-colors shadow-md shadow-primary/20"
+              className="flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-primary rounded-xl hover:bg-primary/90 transition-colors shadow-md shadow-primary/20"
             >
               Continue <ArrowRight className="h-4 w-4" />
             </button>
@@ -586,7 +586,7 @@ export default function CreateContractWizard() {
               type="button" 
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-accent rounded-xl hover:bg-accent/90 transition-colors shadow-md shadow-accent/20 disabled:opacity-70"
+              className="flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-accent rounded-xl hover:bg-accent/90 transition-colors shadow-md shadow-accent/20 disabled:opacity-70"
             >
               {isSubmitting ? (
                 <>Processing...</>

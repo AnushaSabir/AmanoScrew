@@ -3,7 +3,7 @@ import { Wallet, ArrowUpRight, ArrowDownRight, DollarSign } from 'lucide-react';
 
 export default function EscrowWalletPage() {
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8">
+    <div className="p-4 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Escrow Wallet</h1>
         <p className="text-sm text-slate-500 mt-1">Manage your funds and view transaction history securely.</p>
@@ -42,7 +42,7 @@ export default function EscrowWalletPage() {
         <div className="p-6 border-b border-slate-100 flex items-center justify-between">
           <h2 className="font-bold text-slate-800">Recent Transactions</h2>
         </div>
-        <div className="p-12 text-center">
+        <div className="p-6 sm:p-10 md:p-12 text-center">
           <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
             <DollarSign className="h-8 w-8 text-slate-400" />
           </div>

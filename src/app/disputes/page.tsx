@@ -19,12 +19,12 @@ export default function Disputes() {
       </header>
 
       {/* Content */}
-      <main className="flex-1 container mx-auto px-4 py-12 max-w-4xl">
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 md:p-12 shadow-sm space-y-12">
+      <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-4xl">
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-8 md:p-12 shadow-sm space-y-12">
           
           {/* Dispute Resolution Policy */}
           <div>
-            <h1 className="text-4xl font-extrabold text-slate-800 mb-8">Dispute Resolution Policy</h1>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-8">Dispute Resolution Policy</h1>
             <div className="space-y-8 text-slate-600 leading-relaxed">
               <section>
                 <h2 className="text-xl font-bold text-slate-800 mb-3">Filing a Dispute</h2>
@@ -73,7 +73,7 @@ export default function Disputes() {
 
           {/* Refund Policy */}
           <div>
-            <h1 className="text-4xl font-extrabold text-slate-800 mb-8">Refund Policy</h1>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-8">Refund Policy</h1>
             <div className="space-y-8 text-slate-600 leading-relaxed">
               <section>
                 <h2 className="text-xl font-bold text-slate-800 mb-3">Eligibility for Refunds</h2>
@@ -125,7 +125,7 @@ export default function Disputes() {
 
           {/* Seller Protection Policy */}
           <div>
-            <h1 className="text-4xl font-extrabold text-slate-800 mb-8">Seller Protection Policy</h1>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-8">Seller Protection Policy</h1>
             <div className="space-y-8 text-slate-600 leading-relaxed">
               <section>
                 <h2 className="text-xl font-bold text-slate-800 mb-3">Purpose</h2>
@@ -169,7 +169,7 @@ export default function Disputes() {
 
           {/* Buyer Protection Policy */}
           <div>
-            <h1 className="text-4xl font-extrabold text-slate-800 mb-8">Buyer Protection Policy</h1>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-8">Buyer Protection Policy</h1>
             <div className="space-y-8 text-slate-600 leading-relaxed">
               <section>
                 <h2 className="text-xl font-bold text-slate-800 mb-3">Purpose</h2>
