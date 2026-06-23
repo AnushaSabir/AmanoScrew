@@ -13,6 +13,50 @@ export async function POST(request: Request) {
 
     const contractData = await request.json();
 
+    // Self-healing logic: Check if user profile exists to prevent foreign key violations
+    const userId = contractData.buyer_id || contractData.seller_id;
+    if (userId) {
+      const { data: profile } = await supabaseAdmin.from('profiles').select('id').eq('id', userId).single();
+      if (!profile) {
+        // Fetch user from auth to get email
+        const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(userId);
+        if (authUser && authUser.user) {
+          // Create missing profile
+          await supabaseAdmin.from('profiles').insert({
+            id: userId,
+            email: authUser.user.email,
+            full_name: authUser.user.user_metadata?.full_name || 'User',
+            role: 'user'
+          });
+          console.log(`Created missing profile for user ${userId}`);
+        }
+      }
+    }
+
+    let isExistingCounterparty = false;
+    let counterpartyIdToUse = null;
+
+    if (contractData.counterparty_email) {
+      const email = contractData.counterparty_email.trim().toLowerCase();
+      const { data: counterpartyProfile } = await supabaseAdmin
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+        .single();
+        
+      if (counterpartyProfile) {
+        isExistingCounterparty = true;
+        counterpartyIdToUse = counterpartyProfile.id;
+        
+        // Update the payload to link the existing user
+        if (contractData.initiator_role === 'Buyer') {
+          contractData.seller_id = counterpartyIdToUse;
+        } else {
+          contractData.buyer_id = counterpartyIdToUse;
+        }
+      }
+    }
+
     const { data, error } = await supabaseAdmin.from('contracts').insert(contractData).select('id').single();
 
     if (error) {
@@ -25,7 +69,7 @@ export async function POST(request: Request) {
       }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, id: data.id });
+    return NextResponse.json({ success: true, id: data.id, isExistingUser: isExistingCounterparty });
   } catch (error: any) {
     console.error('Unexpected error in API route:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

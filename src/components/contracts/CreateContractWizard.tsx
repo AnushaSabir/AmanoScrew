@@ -99,22 +99,9 @@ export default function CreateContractWizard() {
         }
       }
 
-      let counterpartyId = null;
-      if (formData.counterpartyEmail) {
-        const { data: counterpartyData } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('email', formData.counterpartyEmail.trim().toLowerCase())
-          .single();
-        if (counterpartyData) {
-          counterpartyId = counterpartyData.id;
-        }
-      } else if (formData.counterpartyMobile) {
-        // Also check by mobile if email not provided (assuming mobile might be stored later, for now just placeholder logic)
-      }
-
-      const buyerId = formData.role === 'Buyer' ? user.id : counterpartyId;
-      const sellerId = formData.role === 'Seller' ? user.id : counterpartyId;
+      // We no longer check profiles locally here; the API route handles linking existing users safely.
+      const buyerId = formData.role === 'Buyer' ? user.id : null;
+      const sellerId = formData.role === 'Seller' ? user.id : null;
 
       const contractPayload = {
         title: formData.title,
@@ -151,8 +138,8 @@ export default function CreateContractWizard() {
 
       setCreatedContractId(responseData.id);
       
-      // If no counterparty ID was found but an email was provided, send an invite
-      if (!counterpartyId && formData.counterpartyEmail) {
+      // If an email was provided, send an invite/notification
+      if (formData.counterpartyEmail) {
         try {
           await fetch('/api/invite', {
             method: 'POST',
@@ -160,11 +147,12 @@ export default function CreateContractWizard() {
             body: JSON.stringify({ 
               email: formData.counterpartyEmail.trim().toLowerCase(),
               title: formData.title,
-              inviterName: formData.yourName || user.email
+              inviterName: formData.yourName || user.email,
+              isExistingUser: responseData.isExistingUser
             })
           });
         } catch (inviteErr) {
-          console.error("Failed to send invite email", inviteErr);
+          console.error("Failed to send email notification", inviteErr);
         }
       }
 
