@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
@@ -24,6 +24,9 @@ import {
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
@@ -53,12 +56,57 @@ export default function RegisterPage() {
   const cnicBackRef = useRef<HTMLInputElement>(null);
   const passportRef = useRef<HTMLInputElement>(null);
 
+  // Debounce Username Check
+  useEffect(() => {
+    const checkUsername = async () => {
+      if (!username || username.trim().length < 3) {
+        setUsernameAvailable(null);
+        return;
+      }
+
+      setIsCheckingUsername(true);
+      try {
+        const res = await fetch('/api/auth/check-username', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: username.trim() })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setUsernameAvailable(data.available);
+        } else {
+          setUsernameAvailable(null);
+        }
+      } catch (err) {
+        console.error("Failed to check username", err);
+        setUsernameAvailable(null);
+      } finally {
+        setIsCheckingUsername(false);
+      }
+    };
+
+    const debounceTimer = setTimeout(() => {
+      checkUsername();
+    }, 500);
+
+    return () => clearTimeout(debounceTimer);
+  }, [username]);
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     
     if (!captchaChecked) {
       setError("Please verify that you are not a robot.");
+      return;
+    }
+    
+    if (usernameAvailable === false) {
+      setError("Please choose a different username. This one is already taken.");
+      return;
+    }
+    if (isCheckingUsername || username.trim().length < 3) {
+      setError("Please enter a valid, available username.");
       return;
     }
     
@@ -103,7 +151,7 @@ export default function RegisterPage() {
         backUrl: backUrl || undefined
       };
 
-      const { success, error: authError } = await register(name, email, password, mobile, kycData);
+      const { success, error: authError } = await register(name, email, password, mobile, username, kycData);
       if (success) {
         try {
           await fetch('/api/auth/welcome-email', {
@@ -177,6 +225,40 @@ export default function RegisterPage() {
                   placeholder="John Doe"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Username</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <span className="text-slate-400 font-bold">@</span>
+                </div>
+                <input
+                  type="text"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className={`w-full pl-11 pr-10 py-3 bg-slate-50 border rounded-xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none ${username && username.length >= 3 ? (usernameAvailable === true ? 'border-emerald-500 bg-emerald-50/30' : usernameAvailable === false ? 'border-red-500 bg-red-50/30' : 'border-slate-200') : 'border-slate-200'}`}
+                  placeholder="johndoe"
+                />
+                <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                  {isCheckingUsername ? (
+                    <RefreshCw className="h-4 w-4 text-slate-400 animate-spin" />
+                  ) : username && username.length >= 3 ? (
+                    usernameAvailable === true ? (
+                      <CheckSquare className="h-4 w-4 text-emerald-500" />
+                    ) : usernameAvailable === false ? (
+                      <X className="h-5 w-5 text-red-500" />
+                    ) : null
+                  ) : null}
+                </div>
+              </div>
+              {username && username.length >= 3 && usernameAvailable === false && !isCheckingUsername && (
+                <p className="text-red-500 text-xs font-bold mt-1">Username is already taken.</p>
+              )}
+              {username && username.length >= 3 && usernameAvailable === true && !isCheckingUsername && (
+                <p className="text-emerald-500 text-xs font-bold mt-1">Username is available!</p>
+              )}
             </div>
 
             <div>
