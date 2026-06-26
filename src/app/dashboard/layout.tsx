@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { 
   Shield, 
@@ -24,20 +25,45 @@ export default function DashboardLayout({
   const { user, isLoading, logout } = useAuth();
   const router = useRouter();
   const [showNotifications, setShowNotifications] = useState(false);
-  const [notificationsRead, setNotificationsRead] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem("amano-notifications-read") === "true";
-  });
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     if (!isLoading && !user) {
       router.push("/login");
+      return;
+    }
+
+    if (user) {
+      const fetchNotifications = async () => {
+        const { data, error } = await supabase
+          .from('notifications')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        if (data) {
+          setNotifications(data);
+          setUnreadCount(data.filter(n => !n.is_read).length);
+        }
+      };
+
+      fetchNotifications();
     }
   }, [user, isLoading, router]);
 
-  const markAllNotificationsRead = () => {
-    setNotificationsRead(true);
-    localStorage.setItem("amano-notifications-read", "true");
+  const markAllNotificationsRead = async () => {
+    if (!user) return;
+    
+    // Optimistic update
+    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+    setUnreadCount(0);
+
+    await supabase
+      .from('notifications')
+      .update({ is_read: true })
+      .eq('user_id', user.id)
+      .eq('is_read', false);
   };
 
   if (isLoading || !user) {
@@ -122,7 +148,7 @@ export default function DashboardLayout({
                 className={`relative p-2 transition-colors rounded-lg ${showNotifications ? 'bg-slate-100 text-slate-800' : 'text-slate-400 hover:text-slate-600'}`}
               >
                 <Bell className="h-5 w-5" />
-                {!notificationsRead && (
+                {unreadCount > 0 && (
                   <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                 )}
               </button>
@@ -134,25 +160,39 @@ export default function DashboardLayout({
                     <button
                       type="button"
                       onClick={markAllNotificationsRead}
-                      disabled={notificationsRead}
+                      disabled={unreadCount === 0}
                       className="text-xs text-primary font-bold hover:underline disabled:text-slate-400 disabled:no-underline disabled:cursor-not-allowed"
                     >
-                      {notificationsRead ? "All read" : "Mark all read"}
+                      {unreadCount === 0 ? "All read" : "Mark all read"}
                     </button>
                   </div>
                   <div className="divide-y divide-slate-100 max-h-[300px] overflow-y-auto">
-                    <div className={`p-4 hover:bg-slate-50 transition-colors cursor-pointer ${notificationsRead ? 'bg-white' : 'bg-blue-50/50'}`}>
-                      <div className="flex gap-3">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-                          <Bell className="h-4 w-4 text-primary" />
+                    {notifications.length === 0 ? (
+                      <div className="p-4 text-center text-sm text-slate-500">No notifications yet.</div>
+                    ) : (
+                      notifications.map(notif => (
+                        <div key={notif.id} className={`p-4 hover:bg-slate-50 transition-colors ${!notif.is_read ? 'bg-blue-50/50' : 'bg-white'}`}>
+                          <div className="flex gap-3">
+                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                              <Bell className="h-4 w-4 text-primary" />
+                            </div>
+                            <div className="flex-1">
+                              {notif.link ? (
+                                <Link href={notif.link} onClick={() => setShowNotifications(false)}>
+                                  <p className="text-sm font-medium text-slate-800 hover:text-primary transition-colors cursor-pointer">{notif.title}</p>
+                                </Link>
+                              ) : (
+                                <p className="text-sm font-medium text-slate-800">{notif.title}</p>
+                              )}
+                              <p className="text-xs text-slate-500 mt-0.5">{notif.message}</p>
+                              <p className="text-[10px] text-slate-400 mt-2 font-medium">
+                                {new Date(notif.created_at).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm font-medium text-slate-800">Welcome to Amano!</p>
-                          <p className="text-xs text-slate-500 mt-0.5">Your account is ready for secure escrow transactions.</p>
-                          <p className="text-[10px] text-slate-400 mt-2 font-medium">Just now</p>
-                        </div>
-                      </div>
-                    </div>
+                      ))
+                    )}
                   </div>
                 </div>
               )}

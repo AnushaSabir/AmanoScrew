@@ -138,8 +138,9 @@ export default function CreateContractWizard() {
 
       setCreatedContractId(responseData.id);
       
-      // If an email was provided, send an invite/notification
-      if (formData.counterpartyEmail) {
+      // If the user does not exist (or hasn't fully registered with a username), send an invite email
+      // Existing users with a username will get a dashboard notification directly via the API.
+      if (formData.counterpartyEmail && !responseData.isExistingUser) {
         try {
           await fetch('/api/invite', {
             method: 'POST',

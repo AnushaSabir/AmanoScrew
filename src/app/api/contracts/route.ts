@@ -40,11 +40,12 @@ export async function POST(request: Request) {
       const email = contractData.counterparty_email.trim().toLowerCase();
       const { data: counterpartyProfile } = await supabaseAdmin
         .from('profiles')
-        .select('id')
+        .select('id, username')
         .eq('email', email)
         .single();
         
-      if (counterpartyProfile) {
+      // Only treat them as an existing user if they have finished registration and claimed a username
+      if (counterpartyProfile && counterpartyProfile.username) {
         isExistingCounterparty = true;
         counterpartyIdToUse = counterpartyProfile.id;
         
@@ -58,6 +59,20 @@ export async function POST(request: Request) {
     }
 
     const { data, error } = await supabaseAdmin.from('contracts').insert(contractData).select('id').single();
+
+    if (!error && isExistingCounterparty && counterpartyIdToUse) {
+      // Send Dashboard Notification
+      const title = 'New Contract Invite';
+      const message = `You have been invited to a new contract: "${contractData.title || 'Untitled Deal'}".`;
+      const link = `/dashboard/contracts/${data.id}`;
+      
+      await supabaseAdmin.from('notifications').insert({
+        user_id: counterpartyIdToUse,
+        title,
+        message,
+        link,
+      });
+    }
 
     if (error) {
       console.error('Insert Error in API route:', error);
