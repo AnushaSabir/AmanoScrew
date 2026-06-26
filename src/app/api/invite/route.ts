@@ -11,7 +11,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    const actionLink = "https://www.amanoescrow.com/login";
+    const actionLink = isExistingUser
+      ? "https://www.amanoescrow.com/login"
+      : "https://www.amanoescrow.com/register";
+      
     const subject = isExistingUser 
       ? 'Action Required: You have a new deal on Amano'
       : 'You have been invited to a secure deal on Amano';
