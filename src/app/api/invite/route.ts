@@ -11,9 +11,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
-    const host = request.headers.get('host') || 'localhost:3000';
+    const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || '';
     const protocol = host.includes('localhost') ? 'http' : 'https';
-    const baseUrl = `${protocol}://${host}`;
+    let baseUrl = host ? `${protocol}://${host}` : '';
+    
+    if (!baseUrl && process.env.NEXT_PUBLIC_SITE_URL) {
+      baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    }
+    if (!baseUrl) {
+      baseUrl = 'http://localhost:3000';
+    }
 
     const actionLink = isExistingUser
       ? `${baseUrl}/login`

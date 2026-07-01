@@ -41,7 +41,7 @@ export async function POST(request: Request) {
       const { data: counterpartyProfile } = await supabaseAdmin
         .from('profiles')
         .select('id, username')
-        .eq('email', email)
+        .ilike('email', email)
         .single();
         
       // Treat them as an existing user if they have a profile in the system
