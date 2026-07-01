@@ -11,9 +11,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
     }
 
+    const host = request.headers.get('host') || 'localhost:3000';
+    const protocol = host.includes('localhost') ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
+
     const actionLink = isExistingUser
-      ? "https://www.amanoescrow.com/login"
-      : "https://www.amanoescrow.com/register";
+      ? `${baseUrl}/login`
+      : `${baseUrl}/register`;
       
     const subject = isExistingUser 
       ? 'Action Required: You have a new deal on Amano'

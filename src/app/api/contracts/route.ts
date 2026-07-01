@@ -44,8 +44,8 @@ export async function POST(request: Request) {
         .eq('email', email)
         .single();
         
-      // Only treat them as an existing user if they have finished registration and claimed a username
-      if (counterpartyProfile && counterpartyProfile.username) {
+      // Treat them as an existing user if they have a profile in the system
+      if (counterpartyProfile) {
         isExistingCounterparty = true;
         counterpartyIdToUse = counterpartyProfile.id;
         
